@@ -29,10 +29,22 @@ public record HumanPlayer(String name) implements BattleshipPlayer {
 	public ShipPosition placeYourShip() {
 		print("1st position of your ship? ");
 		var position1 = readField();
-		print("2nd position of your ship? ");
+		print("2nd position of your ship (adjacent)? ");
 		var position2 = readField();
+		clearTerminal();
 		System.out.println("---");
 		return new ShipPosition(position1, position2);
+	}
+
+	public void clearTerminal() {
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
 	}
 
 	@Override
