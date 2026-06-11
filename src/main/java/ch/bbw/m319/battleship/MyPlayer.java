@@ -14,27 +14,52 @@ public class MyPlayer implements BattleshipPlayer {
 
     @Override
     public ShipPosition placeYourShip() {
-        // TODO: replace this implementation: always top-left is not that good...
-        return new ShipPosition(BattleshipField.A1, BattleshipField.A2);
+        String shipPos1 = getRandomField();
+
+        String[] validShipPos2;
+        if (shipPos1.equals("A1")) {
+            validShipPos2 = new String[]{"A2", "B1"};
+        } else if (shipPos1.equals("A2")) {
+            validShipPos2 = new String[]{"A1", "A3", "B2"};
+        } else if (shipPos1.equals("A3")) {
+            validShipPos2 = new String[]{"A2", "B3"};
+        } else if (shipPos1.equals("B1")) {
+            validShipPos2 = new String[]{"A1", "B2", "C1"};
+        } else if (shipPos1.equals("B2")) {
+            validShipPos2 = new String[]{"A2", "B1", "B3", "C2"};
+        } else if (shipPos1.equals("B3")) {
+            validShipPos2 = new String[]{"A3", "B2", "C3"};
+        } else if (shipPos1.equals("C1")) {
+            validShipPos2 = new String[]{"B1", "C2"};
+        } else if (shipPos1.equals("C2")) {
+            validShipPos2 = new String[]{"B2", "C1", "C3"};
+        } else {
+            validShipPos2 = new String[]{"B3", "C2"};
+        }
+
+        String shipPos2 = validShipPos2[(int) Math.floor(Math.random() * validShipPos2.length)];
+
+        System.out.println(shipPos1 + " " + shipPos2);
+        return new ShipPosition(BattleshipField.valueOf(shipPos1), BattleshipField.valueOf(shipPos2));
     }
 
     private String getRandomField() {
-        double columnNum = Math.floor(Math.random() * 3);
-        double row = Math.floor(Math.random() * 3) + 1;
+        double columnNum = Math.ceil(Math.random() * 3);
+        double row = Math.ceil(Math.random() * 3);
         int rowInt = (int) row;
 
         String columnLetter;
 
-        if (columnNum == 0) {
+        if (columnNum == 1) {
             columnLetter = "A";
-        } else if (columnNum == 1) {
+        } else if (columnNum == 2) {
             columnLetter = "B";
         } else {
             columnLetter = "C";
         }
 
         String attackField = columnLetter + rowInt;
-        System.out.println(attackField);
+        //System.out.println(attackField);
         return attackField;
     }
 
