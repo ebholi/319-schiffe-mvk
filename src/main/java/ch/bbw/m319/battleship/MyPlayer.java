@@ -16,6 +16,7 @@ public class MyPlayer implements BattleshipPlayer {
     public ShipPosition placeYourShip() {
         String shipPos1 = getRandomField();
 
+        // Manual assignment to valid Positions for every Field
         String[] validShipPos2;
         if (shipPos1.equals("A1")) {
             validShipPos2 = new String[]{"A2", "B1"};
@@ -37,15 +38,15 @@ public class MyPlayer implements BattleshipPlayer {
             validShipPos2 = new String[]{"B3", "C2"};
         }
 
+        // Selecting random Ship Position form valid Positions
         String shipPos2 = validShipPos2[(int) Math.floor(Math.random() * validShipPos2.length)];
 
-        System.out.println(shipPos1 + " " + shipPos2);
         return new ShipPosition(BattleshipField.valueOf(shipPos1), BattleshipField.valueOf(shipPos2));
     }
 
     private String getRandomField() {
         double columnNum = Math.ceil(Math.random() * 3);
-        double row = Math.ceil(Math.random() * 3);
+        double row = Math.ceil(Math.random() * 3); // Math.ceil means I don't have to add 1 like if I was using Math.floor
         int rowInt = (int) row;
 
         String columnLetter;
@@ -58,13 +59,13 @@ public class MyPlayer implements BattleshipPlayer {
             columnLetter = "C";
         }
 
-        String attackField = columnLetter + rowInt;
-        //System.out.println(attackField);
-        return attackField;
+        return columnLetter + rowInt;
     }
 
     @Override
     public BattleshipField takeAim() {
+        String attackedField = getRandomField();
+        if (attackedField.equals("A1")) {}
         return BattleshipField.valueOf(getRandomField());
     }
 }
