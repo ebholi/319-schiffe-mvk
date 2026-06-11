@@ -11,14 +11,14 @@ import ch.bbw.m319.battleship.api.ShipPosition;
 /**
  * Ein Beispiel-Spieler welcher allen Input von der Konsole liest.
  */
-public record HumanPlayer(String name) implements BattleshipPlayer {
+public record OliverPlayer(String name) implements BattleshipPlayer {
 
 	static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		System.out.println("Shrink your terminal height, such that there are only 2 lines visible...");
 		System.out.println("Valid coordinates are A1 up to C3.");
-		BattleshipArena.playOnce(new HumanPlayer("Player1"), new HumanPlayer("Player2"));
+		BattleshipArena.playOnce(new OliverPlayer("Player1"), new OliverPlayer("Player2"));
 	}
 
 	private void print(String msg) {
