@@ -18,8 +18,7 @@ public class MyPlayer implements BattleshipPlayer {
         return new ShipPosition(BattleshipField.A1, BattleshipField.A2);
     }
 
-    @Override
-    public BattleshipField takeAim() {
+    private String getRandomField() {
         double columnNum = Math.floor(Math.random() * 3);
         double row = Math.floor(Math.random() * 3) + 1;
         int rowInt = (int) row;
@@ -36,6 +35,11 @@ public class MyPlayer implements BattleshipPlayer {
 
         String attackField = columnLetter + rowInt;
         System.out.println(attackField);
-        return BattleshipField.valueOf(attackField);
+        return attackField;
+    }
+
+    @Override
+    public BattleshipField takeAim() {
+        return BattleshipField.valueOf(getRandomField());
     }
 }
