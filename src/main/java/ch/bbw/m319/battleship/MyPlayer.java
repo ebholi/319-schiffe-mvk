@@ -13,7 +13,7 @@ public class MyPlayer implements BattleshipPlayer {
 
     public static void main(String[] args) {
         // let it play against itself
-        BattleshipArena.playMultipleAndCount(new MyPlayer(), new MyPlayer(), 1717);
+        BattleshipArena.playMultipleAndCount(new MyPlayer(), new DumbPlayer(), 1717);
     }
 
     @Override
@@ -90,3 +90,9 @@ public class MyPlayer implements BattleshipPlayer {
         return BattleshipField.valueOf(fieldsToAttack.get(attackIndex++));
     }
 }
+
+// Note for future
+// Only these Fields have to be attacked to find a ship:
+//    B1
+// A2    C2
+//    B3
