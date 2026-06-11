@@ -5,11 +5,15 @@ import ch.bbw.m319.battleship.api.BattleshipField;
 import ch.bbw.m319.battleship.api.BattleshipPlayer;
 import ch.bbw.m319.battleship.api.ShipPosition;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MyPlayer implements BattleshipPlayer {
 
     public static void main(String[] args) {
         // let it play against itself
-        BattleshipArena.playOnce(new MyPlayer(), new MyPlayer());
+        BattleshipArena.playMultipleAndCount(new MyPlayer(), new MyPlayer(), 1717);
     }
 
     @Override
@@ -62,10 +66,27 @@ public class MyPlayer implements BattleshipPlayer {
         return columnLetter + rowInt;
     }
 
+    List<String> fieldsToAttack = new ArrayList<>();
+    int attackIndex = 0;
+
     @Override
     public BattleshipField takeAim() {
-        String attackedField = getRandomField();
-        if (attackedField.equals("A1")) {}
-        return BattleshipField.valueOf(getRandomField());
+        String attackField;
+
+        if (fieldsToAttack.isEmpty()) {
+            for (int i = 0; i < 9; i++) {
+                do {
+                    attackField = getRandomField();
+                } while (fieldsToAttack.contains(attackField));
+                fieldsToAttack.add(attackField);
+            }
+        }
+
+        // Resets attackIndex after
+        if (attackIndex >= fieldsToAttack.size()) {
+            attackIndex = 0;
+        }
+
+        return BattleshipField.valueOf(fieldsToAttack.get(attackIndex++));
     }
 }
