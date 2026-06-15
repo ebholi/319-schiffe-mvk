@@ -1,80 +1,111 @@
 package ch.bbw.m319.battleship;
 
-import java.util.Locale;
-import java.util.Scanner;
-
 import ch.bbw.m319.battleship.api.BattleshipArena;
 import ch.bbw.m319.battleship.api.BattleshipField;
 import ch.bbw.m319.battleship.api.BattleshipPlayer;
 import ch.bbw.m319.battleship.api.ShipPosition;
 
-/**
- * Ein Beispiel-Spieler welcher allen Input von der Konsole liest.
- */
-public record OliverPlayer(String name) implements BattleshipPlayer {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-	static Scanner scanner = new Scanner(System.in);
+public class OliverPlayer implements BattleshipPlayer {
 
-	public static void main(String[] args) {
-		System.out.println("Shrink your terminal height, such that there are only 2 lines visible...");
-		System.out.println("Valid coordinates are A1 up to C3.");
-		BattleshipArena.playOnce(new OliverPlayer("Player1"), new OliverPlayer("Player2"));
-	}
+    public static void main(String[] args) {
+        // let it play against itself
+        BattleshipArena.playMultipleAndCount(new OliverPlayer(), new DumbPlayer(), 1000);
+    }
 
-	private void print(String msg) {
-		System.out.print(name + ": " + msg);
-	}
+    @Override
+    public ShipPosition placeYourShip() {
+        String shipPos1 = getRandomField();
 
-	@Override
-	public ShipPosition placeYourShip() {
-		print("1st position of your ship? ");
-		var position1 = readField();
-		print("2nd position of your ship (adjacent)? ");
-		var position2 = readField();
-		clearTerminal();
-		System.out.println("---");
-		return new ShipPosition(position1, position2);
-	}
+        // Manual assignment to valid Positions for every Field
+        String[] validShipPos2;
+        if (shipPos1.equals("A1")) {
+            validShipPos2 = new String[]{"A2", "B1"};
+        } else if (shipPos1.equals("A2")) {
+            validShipPos2 = new String[]{"A1", "A3", "B2"};
+        } else if (shipPos1.equals("A3")) {
+            validShipPos2 = new String[]{"A2", "B3"};
+        } else if (shipPos1.equals("B1")) {
+            validShipPos2 = new String[]{"A1", "B2", "C1"};
+        } else if (shipPos1.equals("B2")) {
+            validShipPos2 = new String[]{"A2", "B1", "B3", "C2"};
+        } else if (shipPos1.equals("B3")) {
+            validShipPos2 = new String[]{"A3", "B2", "C3"};
+        } else if (shipPos1.equals("C1")) {
+            validShipPos2 = new String[]{"B1", "C2"};
+        } else if (shipPos1.equals("C2")) {
+            validShipPos2 = new String[]{"B2", "C1", "C3"};
+        } else {
+            validShipPos2 = new String[]{"B3", "C2"};
+        }
 
-	public void clearTerminal() {
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-	}
+        // Selecting random Ship Position form valid Positions
+        String shipPos2 = validShipPos2[(int) Math.floor(Math.random() * validShipPos2.length)];
 
-	@Override
-	public BattleshipField takeAim() {
-		print("What's your target? ");
-		return readField();
-	}
+        return new ShipPosition(BattleshipField.valueOf(shipPos1), BattleshipField.valueOf(shipPos2));
+    }
 
-	@Override
-	public void outcomeOfYourTurn(BattleshipField targetedField, boolean isHit) {
-		print("Your shot at " + targetedField + " did " + (isHit ? "HIT!" : "miss..."));
-		System.out.println();
-	}
+    private String getRandomField() {
+        double columnNum = Math.ceil(Math.random() * 3);
+        double row = Math.ceil(Math.random() * 3); // Math.ceil means I don't have to add 1 like if I was using Math.floor
+        int rowInt = (int) row;
 
-	@Override
-	public void gameFinished(ShipPosition ship, boolean youHaveWon) {
-		if (youHaveWon) {
-			print("WINNER! ");
-		}
-	}
+        String columnLetter;
 
-	private BattleshipField readField() {
-		while (true) {
-			var line = scanner.nextLine();
-			var str = line.trim().toUpperCase(Locale.ROOT);
-			try {
-				return BattleshipField.valueOf(str);
-			} catch (IllegalArgumentException e) {
-				print("invalid input, try again with A1-C3... ");
-			}
-		}
-	}
+        if (columnNum == 1) {
+            columnLetter = "A";
+        } else if (columnNum == 2) {
+            columnLetter = "B";
+        } else {
+            columnLetter = "C";
+        }
+
+        return columnLetter + rowInt;
+    }
+
+    private List<String> getFirstFields() {
+        List<String> firstFields = new ArrayList<>();
+
+        firstFields.add("A2");
+        firstFields.add("B1");
+        firstFields.add("B3");
+        firstFields.add("C2");
+
+        Collections.shuffle(firstFields);
+        return firstFields;
+    }
+
+    List<String> fieldsToAttack = new ArrayList<>();
+    int attackIndex = 0;
+
+    @Override
+    public BattleshipField takeAim() {
+        List<String> firstAttackFields = getFirstFields();
+        String attackField;
+
+        if (fieldsToAttack.isEmpty()) {
+            for (int i = 0; i < 9; i++) {
+                do {
+                    attackField = getRandomField();
+                } while (fieldsToAttack.contains(attackField));
+                fieldsToAttack.add(attackField);
+            }
+        }
+
+        // Resets attackIndex after
+        if (attackIndex >= fieldsToAttack.size()) {
+            attackIndex = 0;
+        }
+
+        return BattleshipField.valueOf(fieldsToAttack.get(attackIndex++));
+    }
 }
+
+// Note for future
+// Only these Fields have to be attacked to find a ship:
+//    B1
+// A2    C2
+//    B3
