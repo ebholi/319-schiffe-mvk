@@ -78,12 +78,26 @@ public class OliverPlayer implements BattleshipPlayer {
         return firstFields;
     }
 
+    private  List<String> getSecondFields() {
+        List<String> secondFields = new ArrayList<>();
+
+        secondFields.add("A1");
+        secondFields.add("A3");
+        secondFields.add("B2");
+        secondFields.add("C1");
+        secondFields.add("C3");
+
+        Collections.shuffle(secondFields);
+        return secondFields;
+    }
+
     List<String> fieldsToAttack = new ArrayList<>();
     int attackIndex = 0;
 
     @Override
     public BattleshipField takeAim() {
         List<String> firstAttackFields = getFirstFields();
+        List<String> secondAttackFields = getSecondFields();
         String attackField;
 
         if (fieldsToAttack.isEmpty()) {
